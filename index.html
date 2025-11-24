@@ -1,10 +1,20 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-
-    <title>Unity WebGL • VK Style</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <script src="https://unpkg.com/@vkontakte/vk-bridge/dist/browser.min.js"></script>
+<script>
+  // инициализация VK Bridge при загрузке страницы
+  document.addEventListener('DOMContentLoaded', function() {
+    try {
+      vkBridge.send('VKWebAppInit');
+    } catch (e) {
+      console.warn('vkBridge init failed', e);
+    }
+  });
+</script>
+    <title>Unity WebGL</title>
 
     <style>
         html, body {
@@ -13,101 +23,33 @@
             width: 100%;
             height: 100%;
             overflow: hidden;
-            background: #f0f2f5; /* VK серый фон */
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background: #000;
         }
 
+        /* Контейнер Unity на весь iframe */
         #unity-container {
-            position: absolute;
             width: 100%;
             height: 100%;
+            position: absolute;
             inset: 0;
         }
 
+        /* Canvas растягивается полностью */
         #unity-canvas {
             width: 100%;
             height: 100%;
             outline: none;
         }
-
-
-        /* ---------- VK LOADING SCREEN ---------- */
-        #loading-screen {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            inset: 0;
-            background: #f0f2f5; /* фон VK */
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .vk-logo {
-            width: 82px;
-            height: 82px;
-            background: #0077ff;  /* VK синий */
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 34px;
-            font-weight: bold;
-            user-select: none;
-        }
-
-        .vk-progress {
-            width: 200px;
-            height: 6px;
-            background: #dbe1e7;
-            border-radius: 3px;
-            overflow: hidden;
-            margin-top: 26px;
-        }
-
-        .vk-progress-fill {
-            width: 0%;
-            height: 100%;
-            background: #0077ff;
-            transition: width 0.1s linear;
-        }
-
-        .vk-loading-text {
-            margin-top: 12px;
-            font-size: 14px;
-            color: #6d7885;
-        }
     </style>
 </head>
-
 <body>
 
-    <!-- ========= VK ЗАГРУЗОЧНЫЙ ЭКРАН ========= -->
-    <div id="loading-screen">
-        <div class="vk-logo">VK</div>
-
-        <div class="vk-progress">
-            <div id="progress-fill" class="vk-progress-fill"></div>
-        </div>
-
-        <div class="vk-loading-text" id="vk-text">Загрузка 0%</div>
-    </div>
-
-
-    <!-- ========= UNITY CANVAS ========= -->
     <div id="unity-container">
         <canvas id="unity-canvas"></canvas>
     </div>
 
-
     <script src="Build/UnityLoader.js"></script>
     <script>
-        const fill = document.getElementById("progress-fill");
-        const text = document.getElementById("vk-text");
-        const screen = document.getElementById("loading-screen");
-
         createUnityInstance(document.querySelector("#unity-canvas"), {
             dataUrl: "Build/build.data",
             frameworkUrl: "Build/build.framework.js",
@@ -116,14 +58,10 @@
             companyName: "Company",
             productName: "Product",
             productVersion: "1.0",
-        }, (progress) => {
-            fill.style.width = (progress * 100) + "%";
-            text.textContent = "Загрузка " + Math.floor(progress * 100) + "%";
-        }).then(() => {
-            screen.style.display = "none";
         });
     </script>
 
 </body>
 </html>
+
 
